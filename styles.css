@@ -1,0 +1,11 @@
+body{
+    font-family: 'Times New Roman', Times, serif;
+    background-color: rgb(129, 139, 148);
+}
+#d1{
+    display: flex;
+}
+#dc{
+    background-color: rgb(156, 154, 154);
+    border-radius: 10px;
+}
