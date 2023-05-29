@@ -1,0 +1,26 @@
+body{
+    background-color: #111111;
+}
+#top{
+    text-align: center;
+}
+#h1{
+    text-align: center;
+    font-family: "Press Start 2P", "Consolas", sans-serif;
+    color: rgba(2, 224, 43, 0.795);
+    text-decoration:underline
+}
+#texto{
+    font-family: "Ubuntu", "Consolas", sans-serif;
+    font-size: small;
+    color: #fff8f0;
+    text-align: center;
+}
+#redes{
+    text-align: center;
+}
+#menu{
+    font-family: "Ubuntu", "Consolas", sans-serif;
+    font-size: small;
+    text-align: center;
+}

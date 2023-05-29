@@ -1,0 +1,24 @@
+/* O esse "body" muda a cor de fundo da página e a fonte para "times new roman" */
+body{
+    background-color: rgb(156, 154, 154);
+    font-family: 'Times New Roman', Times, serif;
+}
+/* Isso aqui muda somente o título "h1" da página */
+#h1{
+    text-align: center;
+    font-size: xx-large;
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: bold;
+    text-decoration: underline;
+}
+/* Muda somente os links que ficam na parte inferior do site */
+#links{
+    text-align: center;
+    border-radius: 10px;
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 10px;
+    background-color: grey;
+    box-shadow: 10px;
+    text-shadow: 10px;
+}
