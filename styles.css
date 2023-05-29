@@ -8,4 +8,14 @@ body{
 #dc{
     background-color: rgb(156, 154, 154);
     border-radius: 10px;
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 10px;
+}
+#links{
+    display:inline-block;
+    background-color: rgb(156, 154, 154);
+    border-radius: 10px;
+    border-style: solid;
+    border-width: 2px;
 }
