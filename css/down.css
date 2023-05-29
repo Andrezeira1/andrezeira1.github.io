@@ -1,24 +1,30 @@
-/* O esse "body" muda a cor de fundo da página e a fonte para "times new roman" */
 body{
-    background-color: rgb(156, 154, 154);
-    font-family: 'Times New Roman', Times, serif;
+    background-color: #111111;
 }
-/* Isso aqui muda somente o título "h1" da página */
+#tux{
+    text-align: center;
+    font-size: 1px;
+    width: auto ;
+}
 #h1{
+    color:rgba(2, 224, 43, 0.795);
+    font-family: "Press Start 2P", "Consolas", sans-serif;
     text-align: center;
-    font-size: xx-large;
-    font-family: 'Times New Roman', Times, serif;
-    font-weight: bold;
     text-decoration: underline;
+
 }
-/* Muda somente os links que ficam na parte inferior do site */
-#links{
+#p1{
+    font-family: "Ubuntu", "Consolas", sans-serif;
     text-align: center;
-    border-radius: 10px;
+    color: #fff8f0;
+}
+#links{
     border-style: solid;
-    border-width: 2px;
     border-radius: 10px;
-    background-color: grey;
-    box-shadow: 10px;
-    text-shadow: 10px;
+    border-width: 5px;
+    border-color: rgba(2, 224, 43, 0.795);;
+    text-align: center;
+    font-family: "Ubuntu", Consolas, sans-serif;
+    color: #fff8f0;
+    font-size: larger;
 }
