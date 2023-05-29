@@ -1,0 +1,29 @@
+#d1{
+    background-color: rgb(156, 154, 154);
+    border-radius: 10px;
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 10px;
+}
+#h1{
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    text-align: center;
+}
+#h2{
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    text-align: center;
+}
+#me{
+    background-color: rgb(156, 154, 154);
+    border-radius: 10px;
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 10px;
+}
+#mt{
+    text-align: center;
+    font-size: x-large;
+    font: bold;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 25px
+}
