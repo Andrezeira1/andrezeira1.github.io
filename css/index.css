@@ -31,11 +31,24 @@ body{
 }
 #links{
     font-family: "Ubuntu", "Consolas", sans-serif;
-    text-align: left;
+    text-align: center;
 
 }
 #ot{
     color:rgba(2, 224, 43, 0.795);
     font-family: "Ubuntu", "Consolas", sans-serif;
     font-size: larger;
+}
+a:link{
+    text-decoration: none;
+    color: #fff8f0;
+    font-family: "Ubuntu", "Consolas", sans-serif;
+    cursor: pointer;
+    transition: 0.5s;
+    border: 1px solid ;
+    border-radius: 5px;
+    padding: 5px 7px;
+}
+a:hover{
+    color: rgba(2, 224, 43, 0.795);
 }
