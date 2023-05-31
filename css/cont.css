@@ -18,9 +18,22 @@ body{
 }
 #redes{
     text-align: center;
+    font-size: large;
 }
 #menu{
-    font-family: "Ubuntu", "Consolas", sans-serif;
-    font-size: small;
     text-align: center;
+    font-size: larger;
+}
+a:link{
+    text-decoration: none;
+    color: #fff8f0;
+    font-family: "Ubuntu", "Consolas", sans-serif;
+    cursor: pointer;
+    transition: 0.5s;
+    border: 1px solid ;
+    border-radius: 5px;
+    padding: 5px 8px;
+}
+a:hover{
+    color: rgba(2, 224, 43, 0.795);
 }

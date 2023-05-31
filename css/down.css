@@ -18,13 +18,23 @@ body{
     text-align: center;
     color: #fff8f0;
 }
-#links{
-    border-style: solid;
-    border-radius: 10px;
-    border-width: 5px;
-    border-color: rgba(2, 224, 43, 0.795);;
-    text-align: center;
-    font-family: "Ubuntu", Consolas, sans-serif;
+a:link{
+    text-decoration: none;
     color: #fff8f0;
-    font-size: larger;
+    font-family: "Ubuntu", "Consolas", sans-serif;
+    cursor: pointer;
+    transition: 0.5s;
+    border: 1px solid ;
+    border-radius: 5px;
+    padding: 8px 12px;
+}
+a:hover{
+    color: rgba(2, 224, 43, 0.795);
+}
+#links{
+    text-align: center;
+}
+#t1{
+    text-align: center;
+    color: #fff8f0;
 }
