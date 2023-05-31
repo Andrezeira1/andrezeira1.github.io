@@ -29,17 +29,16 @@ body{
     font-size: xx-large;
     color: rgba(2, 224, 43, 0.795);
 }
-#links{
+#l{
     font-family: "Ubuntu", "Consolas", sans-serif;
     text-align: center;
-
 }
 #ot{
     color:rgba(2, 224, 43, 0.795);
     font-family: "Ubuntu", "Consolas", sans-serif;
     font-size: larger;
 }
-a:link{
+#l a:link{
     text-decoration: none;
     color: #fff8f0;
     font-family: "Ubuntu", "Consolas", sans-serif;
@@ -47,8 +46,14 @@ a:link{
     transition: 0.5s;
     border: 1px solid ;
     border-radius: 5px;
-    padding: 5px 7px;
+    padding: 5px 8px;
 }
-a:hover{
+#l:hover a:hover{
     color: rgba(2, 224, 43, 0.795);
+}
+#l{
+    border: 1px solid #fff8f0;
+    border-radius: 5px;
+    padding: 10px;
+    transition: 0,5;
 }
