@@ -1,5 +1,7 @@
 body{
     background-color: #111111;
+    border: rgba(2, 224, 43, 0.795) solid 1px;
+    border-radius: 5px;
 }
 #d1{
     text-align: center;
@@ -50,12 +52,6 @@ body{
 }
 #l:hover a:hover{
     color: rgba(2, 224, 43, 0.795);
-}
-#l{
-    border: 1px solid #fff8f0;
-    border-radius: 5px;
-    padding: 10px;
-    transition: 0,5;
 }
 #obj{
     text-align: center;

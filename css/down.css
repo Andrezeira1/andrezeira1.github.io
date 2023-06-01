@@ -1,5 +1,7 @@
 body{
     background-color: #111111;
+    border: rgba(2, 224, 43, 0.795) solid 1px;
+    border-radius: 5px;
 }
 #tux{
     text-align: center;
@@ -37,4 +39,5 @@ a:hover{
 #t1{
     text-align: center;
     color: #fff8f0;
+    font-family: "Ubuntu", "Consolas", sans-serif;
 }
