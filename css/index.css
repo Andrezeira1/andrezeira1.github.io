@@ -57,3 +57,17 @@ body{
     padding: 10px;
     transition: 0,5;
 }
+#obj{
+    text-align: center;
+    text-decoration: underline;
+    text-align: center;
+    font-family: "Press Start 2P", "Consolas", sans-serif;
+    font-size: xx-large;
+    color: rgba(2, 224, 43, 0.795);
+}
+#p5{
+    font-family: "Ubuntu", "Consolas", sans-serif;
+    font-size: small;
+    color: #fff8f0;
+    text-align: center;
+}
