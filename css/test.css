@@ -10,6 +10,21 @@ body{
 }
 #header p{
     color: aliceblue;
-    text-align: center;
     font-family: "Ubuntu", "Poppins", sans-serif;
+}
+#header h2{
+    color: aliceblue;
+    font-family: "Poppins", "Ubuntu", sans-serif;
+}
+h2{
+    color: aliceblue;
+    font-family: "Poppins", "Ubuntu", sans-serif;
+}
+p{
+    color: aliceblue;
+    font-family: "Ubuntu", "Poppins", sans-serif;
+}
+a{
+    color: aliceblue;
+    font-family: "Poppins", "Ubuntu", sans-serif;
 }

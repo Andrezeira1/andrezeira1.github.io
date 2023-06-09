@@ -54,7 +54,6 @@ body {
     border: 1px solid;
     border-radius: 5px;
     padding: 5px 8px;
-    margin-bottom: 5px;
 }
 
 #l a:hover {
@@ -73,11 +72,4 @@ body {
     font-size: small;
     color: #fff8f0;
     text-align: center;
-}
-
-@media screen and (max-width: 300px) {
-    #l {
-        display: block;
-        margin-bottom: 10px;
-    }
 }
