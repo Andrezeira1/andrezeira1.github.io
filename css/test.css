@@ -1,4 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&family=Poppins:wght@700&family=Ubuntu&display=swap');
+ul, li, a{
+    scroll-behavior: smooth;
+}
 body{
     background-color: #111111;
 }
