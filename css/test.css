@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&family=Poppins:wght@700&family=Ubuntu&display=swap');
-ul, li, a{
+html{
     scroll-behavior: smooth;
 }
 body{
@@ -30,4 +30,26 @@ p{
 a{
     color: aliceblue;
     font-family: "Poppins", "Ubuntu", sans-serif;
+}
+table{
+    border-collapse: collapse;
+    border: 1px #ffffff solid;
+    color: aliceblue;
+    background: #e6b61c;
+    text-align: center;
+    font-family: "Ubuntu", "Poppins", sans-serif;
+}
+th{
+    border: 1px #ffffff solid;
+    padding: 1px 10px;
+}
+#tr1{
+    border: 1px #ffffff solid;
+    padding: 1px 10px;
+}
+td{
+    border: 1px #ffffff solid;
+}
+#indice{
+    color: aliceblue
 }
