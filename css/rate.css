@@ -26,3 +26,12 @@ ul li{
     font-family: "Roboto", sans-serif;
     text-decoration: underline 1px;
 }
+#indice a{
+    color:white;
+    text-decoration: white underline;
+    border: none;
+}
+#indice a:hover{
+    background-color: cornflowerblue;
+    scroll-behavior: smooth 2s;
+}
