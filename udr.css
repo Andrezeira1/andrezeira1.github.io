@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+body{
+    background-color: black;
+}
+header h1{
+    text-align: center;
+    font-family: Ubuntu, sans-serif;
+    font-weight: 600;
+    color: aliceblue;
+}
+header p{
+    text-align: center;
+    font-family: Ubuntu, sans-serif;
+    font-weight: 400;
+}
+.text{
+    color: aliceblue;
+}
+ul.navbar{
+    text-align: center;
+}
+ul.navbar li{
+    display: inline-block;
+    padding: 14px 16px;
+    transition: 0.5s ease-in-out;
+    cursor: pointer;
+    border: 1px solid black;
+    background-color: rgb(197, 191, 191);
+}
+ul.navbar li:hover{
+    background-color: rgb(113, 221, 198);
+    border: 1px solid black;
+    border-radius: 5px;
+    box-shadow: 10;
+    font-weight: 600;
+}
+nav{
+    border: 1px solid black;
+    border-radius: 5px;
+    width: 500px;
+    margin: auto;
+    background: rgb(69, 69, 71);
+    font-family: "Lato", sans-serif;
+    color: white;
+}
+nav p{
+    text-align: center;
+    font-weight: bold;
+    font-size: larger;
+}
+a{
+    text-decoration: none;
+    color: black;
+}
+
+@media screen and (max-width: 510px) {
+    ul.navbar {
+        text-align: center;
+    }
+    ul.navbar li {
+        display: flex;
+        flex-direction: column;
+        padding: 10px 10px;
+        transition: 0.5s ease-in-out;
+        cursor: pointer;
+        border: 1px solid black;
+        margin-bottom: 10px;
+        transform: translate(-5%, -5%);
+        background-color: rgb(238, 235, 235);
+        font-family: "Ubuntu", sans-serif;
+    }
+    ul.navbar li:hover {
+        background-color: rgb(113, 221, 198);
+        border: 1px solid black;
+        border-radius: 5px;
+        box-shadow: 10;
+        font-weight: 600;
+    }
+    nav {
+        border: 1px solid black;
+        border-radius: 5px;
+        width: 400px;
+        margin: auto;
+        background: rgb(244, 243, 250);
+        font-family: "Lato", sans-serif;
+        background: rgb(69, 69, 71);
+    }
+    nav p{
+        color: aliceblue;
+    }
+}
