@@ -33,5 +33,7 @@ ul li{
 }
 #indice a:hover{
     background-color: cornflowerblue;
-    scroll-behavior: smooth 2s;
+}
+html{
+    scroll-behavior: smooth;
 }
