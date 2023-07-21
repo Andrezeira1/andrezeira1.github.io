@@ -1,50 +1,28 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Poppins&family=Roboto:wght@400;500&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;500;700&family=Nunito:ital,wght@0,300;0,400;0,500;0,700;1,300&family=Open+Sans:wght@400;500;700&display=swap');
 
 body {
     background-color: #111111;
-    border: rgba(2, 224, 43, 0.795) solid 1px;
-    border-radius: 5px;
+    color: aliceblue;
+    font-size: 20px;
+    font-family: "Nunito", "Open Sans", sans-serif;
     cursor: default;
 }
 
-.img {
+.descTitle {
     text-align: center;
+    padding: 10px;
 }
 
-h1,
-h2 {
-    text-align: center;
-    color: rgba(2, 224, 43, 0.795);
-    font-family: "Press Start 2P", "Roboto", sans-serif;
-    text-decoration: underline 2px;
-}
-
-p {
-    text-align: center;
-    color: aliceblue;
-}
-
-.links {
-    text-align: center;
-}
-
-.links a {
+.descTitle h1 {
     text-decoration: underline;
-    color: rgba(2, 224, 43, 0.6 95);
 }
 
-.links a:hover {
-    transition: 0.3s ease-in-out;
-    color: rgba(2, 224, 43, 1);
+.descTitle h1:hover {
+    transition: 0.5s ease-in-out;
+    color: #65e74b;
+    text-decoration: underline solid #65e74b;
 }
 
-.links a:visited {
-    transition: 0.3s ease-in-out;
-    text-decoration: underline rgba(2, 224, 43, 0.795);
-    color: rgba(2, 224, 43, 0.6 95);
-}
-
-.links p {
-    font-size: 20px;
+.sumario li {
+    font-size: 15px;
 }
