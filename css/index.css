@@ -3,26 +3,5 @@
 body {
     background-color: #111111;
     color: aliceblue;
-    font-size: 20px;
-    font-family: "Nunito", "Open Sans", sans-serif;
-    cursor: default;
-}
-
-.descTitle {
-    text-align: center;
-    padding: 10px;
-}
-
-.descTitle h1 {
-    text-decoration: underline;
-}
-
-.descTitle h1:hover {
-    transition: 0.5s ease-in-out;
-    color: #65e74b;
-    text-decoration: underline solid #65e74b;
-}
-
-.sumario li {
-    font-size: 15px;
+    font-family: "Heebo";
 }
