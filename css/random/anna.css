@@ -1,0 +1,16 @@
+body {
+    text-align: center;
+    font-family: Tahoma, sans-serif;
+    font-weight: bolder;
+}
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 10px;
+    border: solid 2px;
+    border-radius: 5px;
+    border-color: brown
+}
+#noButton {
+    position: absolute;
+}
