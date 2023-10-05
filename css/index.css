@@ -3,5 +3,29 @@
 body {
     background-color: #111111;
     color: aliceblue;
-    font-family: "Heebo";
+    font-size: 30px;
+    font-family: "Nunito", sans-serif;
+}
+
+.Top, h2 {
+    cursor: default;
+}
+
+footer {
+    font-family: "Heebo", sans-serif;
+    font-size: 20px;
+}
+
+footer h2:hover{
+    text-decoration: underline 2px;
+}
+
+li a:visited {
+    text-decoration: none;
+    color: aliceblue;
+}
+
+li a:hover {
+    transition: 0.3s ease-in-out;
+    color: rgba(240, 248, 255, 0.74);
 }
