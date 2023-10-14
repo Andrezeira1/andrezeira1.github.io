@@ -8,3 +8,11 @@ Olá, esse é o meu site, usarei ele como uma forma de aprendizado para a progra
 [Página de contato](https://andrezeira1.github.io/html/cont.html) - Caso queira falar comigo sobre programação ou mais, aí que tu me acha
 # Avalie! 😎
 Eu preciso de sua avaliação, com ela, posso melhorar o site, então, avalie tudo o que ver de errado ou que possa ser melhorado se conseguir.
+
+# Estudando atualmente:
+
+|Linguagem|Foco|Dificuldade|
+|-|-|-|
+|HTML|Baixo|Baixo|
+|CSS|Baixo|Médio|
+|Javascript|Bem baixo|Médio
