@@ -10,5 +10,5 @@ Uma básica lista de coisas que você virá vir aqui.
 * 
 Sim, a maioria das coisas vão ser somente sobre programação, eu já tenho outra página sobre testes diferentes, que no caso é o rate.html. acesse-o [clicando aqui.](https://andrezeira1.github.io/html/rate)
 
-# Só isso?
-É, só isso, se tiver achando ruim, vai tomar no seu ❤️!
+# É isso
+Sim, é isso, aproveite e avalie o que acha! ;)
