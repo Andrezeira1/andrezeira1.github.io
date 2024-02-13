@@ -1,0 +1,74 @@
+body {
+    background-color: pink;
+    font-family: Arial, sans-serif;
+    padding-bottom: 10px;
+  }
+
+  h1 {
+    text-align: center;
+    color: white;
+    text-shadow: 2px 2px 4px red;
+  }
+
+  a {
+    text-align: center;
+    justify-content: center;
+  }
+
+  p {
+    font-family: "Lato", sans-serif;
+  }
+
+  #heart {
+    width: 100px;
+    height: 90px;
+    position: relative;
+    margin: 50px auto;
+    animation: beat 1s infinite;
+  }
+
+  #heart:before,
+  #heart:after {
+    position: absolute;
+    content: "";
+    left: 50px;
+    top: 0;
+    width: 50px;
+    height: 80px;
+    background: red;
+    border-radius: 50px 50px 0 0;
+    transform: rotate(-45deg);
+    transform-origin: 0 100%;
+  }
+
+  #heart:after {
+    left: 0;
+    transform: rotate(45deg);
+    transform-origin: 100% 100%;
+  }
+
+  @keyframes beat {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.2);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  #button {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    background-color: red;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+  
