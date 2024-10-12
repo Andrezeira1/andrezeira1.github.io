@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Podcast RSS</title>
+    <title>Leitor de Podcast RSS</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -25,7 +25,7 @@
             margin: auto;
         }
 
-        input[type="text"] {
+        input[type="text"], input[type="file"] {
             width: 80%;
             padding: 10px;
             margin: 10px 0;
@@ -92,12 +92,16 @@
 </head>
 <body>
     <header>
-        <h1>Leitor de Podcast - Feed RSS</h1>
-        <p>Veja informações dos seus podcasts favoritos, apenas usando o Feed RSS.</p>
+        <h1>Leitor de Podcast RSS</h1>
     </header>
     <main>
         <input type="text" id="rssInput" placeholder="Insira o link do feed RSS" />
-        <button onclick="fetchPodcast()">Buscar</button>
+        <button onclick="fetchPodcast()">Buscar por URL</button>
+
+        <br><br>
+
+        <input type="file" id="rssFile" accept=".xml, .rss" />
+        <button onclick="uploadPodcast()">Upload de RSS</button>
 
         <div id="podcastInfo"></div> <!-- Biografia do podcast -->
         <div id="episodesContainer"></div> <!-- Lista de episódios -->
@@ -116,40 +120,60 @@
                 if (!response.ok) throw new Error('Erro ao buscar o feed RSS.');
 
                 const xmlText = await response.text();
-                const parser = new DOMParser();
-                const xml = parser.parseFromString(xmlText, 'application/xml');
-
-                // Extrai as informações do podcast
-                const podcastInfo = {
-                    title: xml.querySelector('channel > title')?.textContent || 'Sem nome',
-                    description: xml.querySelector('channel > description')?.textContent || 'Sem descrição',
-                    image: xml.querySelector('channel > image > url')?.textContent || 'https://via.placeholder.com/100'
-                };
-                displayPodcastInfo(podcastInfo);
-
-                // Extrai os episódios
-                const items = Array.from(xml.querySelectorAll('item'));
-                if (items.length === 0) {
-                    alert('Nenhum episódio encontrado.');
-                    return;
-                }
-
-                const episodes = items.map(item => ({
-                    title: item.querySelector('title')?.textContent || 'Sem título',
-                    pubDate: new Date(item.querySelector('pubDate')?.textContent),
-                    link: item.querySelector('enclosure')?.getAttribute('url') || '#',
-                    image: item.querySelector('itunes\\:image')?.getAttribute('href') ||
-                           xml.querySelector('channel > image > url')?.textContent || 'https://via.placeholder.com/80'
-                }));
-
-                // Ordena os episódios do mais antigo para o mais novo
-                episodes.sort((a, b) => a.pubDate - b.pubDate);
-
-                displayEpisodes(episodes);
+                parseAndDisplayPodcast(xmlText);
             } catch (error) {
                 alert('Erro ao buscar o feed RSS. Verifique o link e tente novamente.');
                 console.error(error);
             }
+        }
+
+        function uploadPodcast() {
+            const fileInput = document.getElementById('rssFile');
+            const file = fileInput.files[0];
+            if (!file) {
+                alert('Por favor, selecione um arquivo .rss ou .xml.');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                const xmlText = event.target.result;
+                parseAndDisplayPodcast(xmlText);
+            };
+            reader.readAsText(file);
+        }
+
+        function parseAndDisplayPodcast(xmlText) {
+            const parser = new DOMParser();
+            const xml = parser.parseFromString(xmlText, 'application/xml');
+
+            // Extrai as informações do podcast
+            const podcastInfo = {
+                title: xml.querySelector('channel > title')?.textContent || 'Sem nome',
+                description: xml.querySelector('channel > description')?.textContent || 'Sem descrição',
+                image: xml.querySelector('channel > image > url')?.textContent || 'https://via.placeholder.com/100'
+            };
+            displayPodcastInfo(podcastInfo);
+
+            // Extrai os episódios
+            const items = Array.from(xml.querySelectorAll('item'));
+            if (items.length === 0) {
+                alert('Nenhum episódio encontrado.');
+                return;
+            }
+
+            const episodes = items.map(item => ({
+                title: item.querySelector('title')?.textContent || 'Sem título',
+                pubDate: new Date(item.querySelector('pubDate')?.textContent),
+                link: item.querySelector('enclosure')?.getAttribute('url') || '#',
+                image: item.querySelector('itunes\\:image')?.getAttribute('href') ||
+                       xml.querySelector('channel > image > url')?.textContent || 'https://via.placeholder.com/80'
+            }));
+
+            // Ordena os episódios do mais antigo para o mais novo
+            episodes.sort((a, b) => a.pubDate - b.pubDate);
+
+            displayEpisodes(episodes);
         }
 
         function displayPodcastInfo(podcast) {
