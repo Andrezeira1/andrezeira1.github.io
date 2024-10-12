@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Podcast RSS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+
+        main {
+            padding: 20px;
+            max-width: 800px;
+            margin: auto;
+        }
+
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #333;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        .podcast-info {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .podcast-info img {
+            width: 100px;
+            height: 100px;
+            margin-right: 15px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .episode {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .episode img {
+            width: 80px;
+            height: 80px;
+            margin-right: 10px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .episode div {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .episode a {
+            text-decoration: none;
+            color: #1a73e8;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Leitor de Podcast - Feed RSS</h1>
+        <p>Veja informações dos seus podcasts favoritos, apenas usando o Feed RSS.</p>
+    </header>
+    <main>
+        <input type="text" id="rssInput" placeholder="Insira o link do feed RSS" />
+        <button onclick="fetchPodcast()">Buscar</button>
+
+        <div id="podcastInfo"></div> <!-- Biografia do podcast -->
+        <div id="episodesContainer"></div> <!-- Lista de episódios -->
+    </main>
+
+    <script>
+        async function fetchPodcast() {
+            const rssUrl = document.getElementById('rssInput').value;
+            if (!rssUrl) {
+                alert('Por favor, insira um link válido.');
+                return;
+            }
+
+            try {
+                const response = await fetch(rssUrl);
+                if (!response.ok) throw new Error('Erro ao buscar o feed RSS.');
+
+                const xmlText = await response.text();
+                const parser = new DOMParser();
+                const xml = parser.parseFromString(xmlText, 'application/xml');
+
+                // Extrai as informações do podcast
+                const podcastInfo = {
+                    title: xml.querySelector('channel > title')?.textContent || 'Sem nome',
+                    description: xml.querySelector('channel > description')?.textContent || 'Sem descrição',
+                    image: xml.querySelector('channel > image > url')?.textContent || 'https://via.placeholder.com/100'
+                };
+                displayPodcastInfo(podcastInfo);
+
+                // Extrai os episódios
+                const items = Array.from(xml.querySelectorAll('item'));
+                if (items.length === 0) {
+                    alert('Nenhum episódio encontrado.');
+                    return;
+                }
+
+                const episodes = items.map(item => ({
+                    title: item.querySelector('title')?.textContent || 'Sem título',
+                    pubDate: new Date(item.querySelector('pubDate')?.textContent),
+                    link: item.querySelector('enclosure')?.getAttribute('url') || '#',
+                    image: item.querySelector('itunes\\:image')?.getAttribute('href') ||
+                           xml.querySelector('channel > image > url')?.textContent || 'https://via.placeholder.com/80'
+                }));
+
+                // Ordena os episódios do mais antigo para o mais novo
+                episodes.sort((a, b) => a.pubDate - b.pubDate);
+
+                displayEpisodes(episodes);
+            } catch (error) {
+                alert('Erro ao buscar o feed RSS. Verifique o link e tente novamente.');
+                console.error(error);
+            }
+        }
+
+        function displayPodcastInfo(podcast) {
+            const container = document.getElementById('podcastInfo');
+            container.innerHTML = `
+                <div class="podcast-info">
+                    <img src="${podcast.image}" alt="Capa do podcast">
+                    <div>
+                        <h2>${podcast.title}</h2>
+                        <p>${podcast.description}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function displayEpisodes(episodes) {
+            const container = document.getElementById('episodesContainer');
+            container.innerHTML = ''; // Limpa os resultados anteriores
+
+            episodes.forEach(episode => {
+                const episodeDiv = document.createElement('div');
+                episodeDiv.className = 'episode';
+
+                episodeDiv.innerHTML = `
+                    <img src="${episode.image}" alt="Capa do episódio">
+                    <div>
+                        <h3>${episode.title}</h3>
+                        <p>Data de lançamento: ${episode.pubDate.toLocaleDateString()}</p>
+                        <a href="${episode.link}" target="_blank">Download</a>
+                    </div>
+                `;
+
+                container.appendChild(episodeDiv);
+            });
+        }
+    </script>
+</body>
+</html>
