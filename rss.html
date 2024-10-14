@@ -25,7 +25,7 @@
             margin: auto;
         }
 
-        input[type="text"], input[type="file"] {
+        input[type="text"], input[type="file"], select {
             width: 80%;
             padding: 10px;
             margin: 10px 0;
@@ -62,13 +62,16 @@
         }
 
         .episode {
-            display: flex;
-            align-items: center;
             background-color: white;
             margin: 10px 0;
             padding: 10px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .episode-header {
+            display: flex;
+            align-items: center;
         }
 
         .episode img {
@@ -79,14 +82,9 @@
             object-fit: cover;
         }
 
-        .episode div {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .episode a {
-            text-decoration: none;
-            color: #1a73e8;
+        .description {
+            margin-top: 5px;
+            white-space: pre-wrap;
         }
     </style>
 </head>
@@ -95,6 +93,16 @@
         <h1>Leitor de Podcast RSS</h1>
     </header>
     <main>
+        <label for="preSelected">Podcast pré-selecionados:</label>
+        <select id="preSelected">
+            <option value="">Selecione um podcast</option>
+            <option value="valdir">Valdir</option>
+            <option value="andrezizes">Andrézizes</option>
+        </select>
+        <button onclick="loadPreSelected()">Carregar Podcast</button>
+
+        <br><br>
+
         <input type="text" id="rssInput" placeholder="Insira o link do feed RSS" />
         <button onclick="fetchPodcast()">Buscar por URL</button>
 
@@ -108,8 +116,8 @@
     </main>
 
     <script>
-        async function fetchPodcast() {
-            const rssUrl = document.getElementById('rssInput').value;
+        async function fetchPodcast(url = null) {
+            const rssUrl = url || document.getElementById('rssInput').value;
             if (!rssUrl) {
                 alert('Por favor, insira um link válido.');
                 return;
@@ -143,11 +151,27 @@
             reader.readAsText(file);
         }
 
+        function loadPreSelected() {
+            const selected = document.getElementById('preSelected').value;
+            if (!selected) {
+                alert('Por favor, selecione um podcast.');
+                return;
+            }
+
+            let rssUrl;
+            if (selected === 'valdir') {
+                rssUrl = 'https://raw.githubusercontent.com/Andrezeira1/andrezeira1.github.io/refs/heads/main/valdir.rss';
+            } else if (selected === 'andrezizes') {
+                rssUrl = 'https://anchor.fm/s/f4318a68/podcast/rss';
+            }
+
+            fetchPodcast(rssUrl);
+        }
+
         function parseAndDisplayPodcast(xmlText) {
             const parser = new DOMParser();
             const xml = parser.parseFromString(xmlText, 'application/xml');
 
-            // Extrai as informações do podcast
             const podcastInfo = {
                 title: xml.querySelector('channel > title')?.textContent || 'Sem nome',
                 description: xml.querySelector('channel > description')?.textContent || 'Sem descrição',
@@ -155,24 +179,17 @@
             };
             displayPodcastInfo(podcastInfo);
 
-            // Extrai os episódios
             const items = Array.from(xml.querySelectorAll('item'));
-            if (items.length === 0) {
-                alert('Nenhum episódio encontrado.');
-                return;
-            }
-
             const episodes = items.map(item => ({
                 title: item.querySelector('title')?.textContent || 'Sem título',
+                description: item.querySelector('description')?.textContent || '',
                 pubDate: new Date(item.querySelector('pubDate')?.textContent),
                 link: item.querySelector('enclosure')?.getAttribute('url') || '#',
                 image: item.querySelector('itunes\\:image')?.getAttribute('href') ||
                        xml.querySelector('channel > image > url')?.textContent || 'https://via.placeholder.com/80'
             }));
 
-            // Ordena os episódios do mais antigo para o mais novo
             episodes.sort((a, b) => a.pubDate - b.pubDate);
-
             displayEpisodes(episodes);
         }
 
@@ -191,19 +208,22 @@
 
         function displayEpisodes(episodes) {
             const container = document.getElementById('episodesContainer');
-            container.innerHTML = ''; // Limpa os resultados anteriores
+            container.innerHTML = '';
 
             episodes.forEach(episode => {
                 const episodeDiv = document.createElement('div');
                 episodeDiv.className = 'episode';
 
                 episodeDiv.innerHTML = `
-                    <img src="${episode.image}" alt="Capa do episódio">
-                    <div>
-                        <h3>${episode.title}</h3>
-                        <p>Data de lançamento: ${episode.pubDate.toLocaleDateString()}</p>
-                        <a href="${episode.link}" target="_blank">Download</a>
+                    <div class="episode-header">
+                        <img src="${episode.image}" alt="Capa do episódio">
+                        <div>
+                            <h3>${episode.title}</h3>
+                            <p>Data de lançamento: ${episode.pubDate.toLocaleDateString()}</p>
+                            <audio controls src="${episode.link}"></audio>
+                        </div>
                     </div>
+                    <div class="description">${episode.description}</div>
                 `;
 
                 container.appendChild(episodeDiv);
