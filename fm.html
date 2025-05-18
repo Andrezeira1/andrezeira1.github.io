@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Last.fm Music Stats Viewer</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --accent-color: #1db954;
+            --card-bg: #1e1e1e;
+            --input-bg: #2d2d2d;
+            --border-color: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: var(--accent-color);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+            transition: background-color 0.3s;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            background-color: #1ed760;
+        }
+
+        .secondary-btn {
+            background-color: #444;
+        }
+
+        .secondary-btn:hover {
+            background-color: #555;
+        }
+
+        .result {
+            margin-top: 30px;
+            display: none;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-right: 15px;
+            object-fit: cover;
+            border: 2px solid var(--accent-color);
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .user-name {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .user-bio {
+            font-size: 14px;
+            color: #aaa;
+            max-height: 60px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .stats-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .stats-item {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+            transition: background-color 0.2s;
+        }
+
+        .stats-item:hover {
+            background-color: rgba(30, 215, 96, 0.1);
+        }
+
+        .stats-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .stats-item-link {
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+
+        .stats-item-link:hover {
+            color: var(--accent-color);
+        }
+
+        .rank {
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-right: 10px;
+            min-width: 25px;
+        }
+
+        .name {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .toggle-details {
+            margin-left: 10px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .toggle-details.open {
+            transform: rotate(180deg);
+        }
+
+        .count {
+            color: #aaa;
+            margin-left: 10px;
+        }
+
+        .item-details {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .item-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 5px;
+            object-fit: cover;
+            margin-right: 15px;
+            float: left;
+        }
+
+        .item-bio {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .error {
+            color: #ff6b6b;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .loading {
+            text-align: center;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid var(--accent-color);
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 100;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 10px;
+        }
+
+        .close-btn {
+            background-color: #ff4d4d;
+            margin-top: 20px;
+        }
+
+        .close-btn:hover {
+            background-color: #ff6666;
+        }
+
+        .copy-options {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .copy-options button {
+            flex: 1;
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .language-switcher {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        .language-btn {
+            width: auto;
+            padding: 8px 12px;
+            background-color: #333;
+            font-size: 14px;
+        }
+
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+    </style>
+</head>
+<body>
+    <div class="language-switcher">
+        <button id="language-btn" class="language-btn">🌐 English</button>
+    </div>
+    
+    <h1 id="title">📊 Last.fm Music Stats</h1>
+    
+    <div class="container">
+        <div class="input-group">
+            <label for="username" id="username-label">🔍 Seu usuário do Last.fm:</label>
+            <input type="text" id="username" placeholder="Digite seu nome de usuário do Last.fm">
+        </div>
+        
+        <div class="input-group">
+            <label for="api-key" id="api-key-label">🔑 Sua chave de API (opcional):</label>
+            <input type="text" id="api-key" placeholder="Digite sua chave de API (deixe em branco para usar a padrão)">
+        </div>
+        
+        <div class="input-group">
+            <label for="data-type" id="data-type-label">🎵 O que você quer ver?</label>
+            <select id="data-type">
+                <option value="artists">Artistas mais ouvidos</option>
+                <option value="albums">Álbuns mais ouvidos</option>
+            </select>
+        </div>
+        
+        <div class="input-group">
+            <label for="period" id="period-label">⏳ Período de tempo:</label>
+            <select id="period">
+                <option value="7day">Última semana</option>
+                <option value="1month">Último mês</option>
+                <option value="3month">Últimos 3 meses</option>
+                <option value="6month">Últimos 6 meses</option>
+                <option value="12month">Último ano</option>
+                <option value="overall">Todos os tempos</option>
+            </select>
+        </div>
+        
+        <button id="fetch-btn">Buscar Estatísticas</button>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p id="loading-text">Carregando dados...</p>
+        </div>
+        
+        <div class="result" id="result">
+            <div class="user-info" id="user-info">
+                <img class="user-avatar" id="user-avatar" src="" alt="Avatar do usuário">
+                <div class="user-details">
+                    <div class="user-name" id="user-name"></div>
+                    <div class="user-bio" id="user-bio"></div>
+                </div>
+            </div>
+            
+            <div class="result-header">
+                <h2 id="result-title"></h2>
+                <span id="result-period"></span>
+            </div>
+            <ul class="stats-list" id="stats-list"></ul>
+            
+            <div class="copy-options">
+                <button id="copy-plain" class="secondary-btn tooltip">📋 <span id="copy-plain-text">Copiar texto simples</span><span class="tooltiptext" id="copy-plain-tooltip">Copiar como texto simples</span></button>
+                <button id="copy-markdown" class="secondary-btn tooltip">📝 <span id="copy-markdown-text">Copiar Markdown</span><span class="tooltiptext" id="copy-markdown-tooltip">Copiar formatado para Discord</span></button>
+                <button id="copy-bbcode" class="secondary-btn tooltip">📌 <span id="copy-bbcode-text">Copiar BBCode</span><span class="tooltiptext" id="copy-bbcode-tooltip">Copiar para fóruns com BBCode</span></button>
+            </div>
+        </div>
+        
+        <div class="error" id="error"></div>
+    </div>
+    
+    <div class="modal" id="api-key-modal">
+        <div class="modal-content">
+            <h2 id="modal-title">🔑 Sobre a chave de API</h2>
+            <p id="modal-text-1">Você pode usar este site sem uma chave de API pessoal, mas há algumas limitações:</p>
+            
+            <h3 id="modal-subtitle-1">📌 Usando a chave padrão:</h3>
+            <ul id="modal-list-1">
+                <li>Funciona para a maioria dos usuários</li>
+                <li>Pode ter limites de requisições</li>
+                <li>Se não funcionar, você precisará de uma chave própria</li>
+            </ul>
+            
+            <h3 id="modal-subtitle-2">📝 Como obter sua chave de API:</h3>
+            <ol id="modal-list-2">
+                <li>Acesse <a href="https://www.last.fm/api/account/create" target="_blank">https://www.last.fm/api/account/create</a></li>
+                <li>Preencha o formulário com um nome e descrição para seu app</li>
+                <li>Clique em "Submit" e anote a chave gerada</li>
+                <li>Cole a chave no campo acima para usar sempre</li>
+            </ol>
+            
+            <p id="modal-warning">⚠️ <strong>Importante:</strong> Nunca compartilhe sua chave de API com outras pessoas!</p>
+            
+            <button class="close-btn" id="close-modal">Entendi, vou tentar sem chave</button>
+        </div>
+    </div>
+
+    <script>
+        // Chave de API padrão (pode ter limites de uso)
+        const DEFAULT_API_KEY = "4aafd41301104167f06eaa71b5dd58d0";
+        
+        // Elementos do DOM
+        const usernameInput = document.getElementById("username");
+        const apiKeyInput = document.getElementById("api-key");
+        const dataTypeSelect = document.getElementById("data-type");
+        const periodSelect = document.getElementById("period");
+        const fetchBtn = document.getElementById("fetch-btn");
+        const loadingDiv = document.getElementById("loading");
+        const resultDiv = document.getElementById("result");
+        const userInfoDiv = document.getElementById("user-info");
+        const userAvatar = document.getElementById("user-avatar");
+        const userName = document.getElementById("user-name");
+        const userBio = document.getElementById("user-bio");
+        const resultTitle = document.getElementById("result-title");
+        const resultPeriod = document.getElementById("result-period");
+        const statsList = document.getElementById("stats-list");
+        const errorDiv = document.getElementById("error");
+        const apiKeyModal = document.getElementById("api-key-modal");
+        const closeModalBtn = document.getElementById("close-modal");
+        const copyPlainBtn = document.getElementById("copy-plain");
+        const copyMarkdownBtn = document.getElementById("copy-markdown");
+        const copyBBCodeBtn = document.getElementById("copy-bbcode");
+        const languageBtn = document.getElementById("language-btn");
+        const loadingText = document.getElementById("loading-text");
+        
+        // Variáveis de idioma
+        let currentLanguage = 'pt';
+        const translations = {
+            'pt': {
+                'title': '📊 Last.fm Music Stats',
+                'username-label': '🔍 Seu usuário do Last.fm:',
+                'api-key-label': '🔑 Sua chave de API (opcional):',
+                'data-type-label': '🎵 O que você quer ver?',
+                'period-label': '⏳ Período de tempo:',
+                'data-type-options': ['Artistas mais ouvidos', 'Álbuns mais ouvidos'],
+                'period-options': ['Última semana', 'Último mês', 'Últimos 3 meses', 'Últimos 6 meses', 'Último ano', 'Todos os tempos'],
+                'fetch-btn': 'Buscar Estatísticas',
+                'loading-text': 'Carregando dados...',
+                'copy-plain-text': 'Copiar texto simples',
+                'copy-markdown-text': 'Copiar Markdown',
+                'copy-bbcode-text': 'Copiar BBCode',
+                'copy-plain-tooltip': 'Copiar como texto simples',
+                'copy-markdown-tooltip': 'Copiar formatado para Discord',
+                'copy-bbcode-tooltip': 'Copiar para fóruns com BBCode',
+                'modal-title': '🔑 Sobre a chave de API',
+                'modal-text-1': 'Você pode usar este site sem uma chave de API pessoal, mas há algumas limitações:',
+                'modal-subtitle-1': '📌 Usando a chave padrão:',
+                'modal-list-1': ['Funciona para a maioria dos usuários', 'Pode ter limites de requisições', 'Se não funcionar, você precisará de uma chave própria'],
+                'modal-subtitle-2': '📝 Como obter sua chave de API:',
+                'modal-list-2': ['Acesse https://www.last.fm/api/account/create', 'Preencha o formulário com um nome e descrição para seu app', 'Clique em "Submit" e anote a chave gerada', 'Cole a chave no campo acima para usar sempre'],
+                'modal-warning': '⚠️ Importante: Nunca compartilhe sua chave de API com outras pessoas!',
+                'close-modal': 'Entendi, vou tentar sem chave',
+                'language-btn': '🌐 English',
+                'error-no-username': 'Por favor, digite um nome de usuário do Last.fm',
+                'error-no-data': 'Nenhum dado encontrado para este usuário/período',
+                'error-api': 'Ocorreu um erro:',
+                'error-limit': 'Limite de requisições excedido. Por favor, use sua própria chave de API.'
+            },
+            'en': {
+                'title': '📊 Last.fm Music Stats',
+                'username-label': '🔍 Your Last.fm username:',
+                'api-key-label': '🔑 Your API key (optional):',
+                'data-type-label': '🎵 What do you want to see?',
+                'period-label': '⏳ Time period:',
+                'data-type-options': ['Top artists', 'Top albums'],
+                'period-options': ['Last week', 'Last month', 'Last 3 months', 'Last 6 months', 'Last year', 'All time'],
+                'fetch-btn': 'Get Statistics',
+                'loading-text': 'Loading data...',
+                'copy-plain-text': 'Copy plain text',
+                'copy-markdown-text': 'Copy Markdown',
+                'copy-bbcode-text': 'Copy BBCode',
+                'copy-plain-tooltip': 'Copy as plain text',
+                'copy-markdown-tooltip': 'Copy formatted for Discord',
+                'copy-bbcode-tooltip': 'Copy for BBCode forums',
+                'modal-title': '🔑 About the API Key',
+                'modal-text-1': 'You can use this site without a personal API key, but there are some limitations:',
+                'modal-subtitle-1': '📌 Using the default key:',
+                'modal-list-1': ['Works for most users', 'May have request limits', 'If it fails, you will need your own key'],
+                'modal-subtitle-2': '📝 How to get your API key:',
+                'modal-list-2': ['Go to https://www.last.fm/api/account/create', 'Fill the form with a name and description for your app', 'Click "Submit" and note the generated key', 'Paste the key in the field above to always use it'],
+                'modal-warning': '⚠️ Important: Never share your API key with others!',
+                'close-modal': 'Got it, I\'ll try without a key',
+                'language-btn': '🌐 Português',
+                'error-no-username': 'Please enter a Last.fm username',
+                'error-no-data': 'No data found for this user/period',
+                'error-api': 'An error occurred:',
+                'error-limit': 'Request limit exceeded. Please use your own API key.'
+            }
+        };
+        
+        // Mostrar modal de API Key na primeira visita
+        if (!localStorage.getItem('apiKeyModalShown')) {
+            apiKeyModal.style.display = "block";
+            localStorage.setItem('apiKeyModalShown', 'true');
+        }
+        
+        // Fechar o modal
+        closeModalBtn.addEventListener("click", () => {
+            apiKeyModal.style.display = "none";
+        });
+        
+        // Alternar idioma
+        languageBtn.addEventListener("click", toggleLanguage);
+        
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'pt' ? 'en' : 'pt';
+            updateLanguage();
+        }
+        
+        function updateLanguage() {
+            const lang = translations[currentLanguage];
+            
+            // Atualizar textos estáticos
+            document.getElementById('title').textContent = lang['title'];
+            document.getElementById('username-label').textContent = lang['username-label'];
+            document.getElementById('api-key-label').textContent = lang['api-key-label'];
+            document.getElementById('data-type-label').textContent = lang['data-type-label'];
+            document.getElementById('period-label').textContent = lang['period-label'];
+            document.getElementById('fetch-btn').textContent = lang['fetch-btn'];
+            document.getElementById('loading-text').textContent = lang['loading-text'];
+            document.getElementById('copy-plain-text').textContent = lang['copy-plain-text'];
+            document.getElementById('copy-markdown-text').textContent = lang['copy-markdown-text'];
+            document.getElementById('copy-bbcode-text').textContent = lang['copy-bbcode-text'];
+            document.getElementById('copy-plain-tooltip').textContent = lang['copy-plain-tooltip'];
+            document.getElementById('copy-markdown-tooltip').textContent = lang['copy-markdown-tooltip'];
+            document.getElementById('copy-bbcode-tooltip').textContent = lang['copy-bbcode-tooltip'];
+            document.getElementById('modal-title').textContent = lang['modal-title'];
+            document.getElementById('modal-text-1').textContent = lang['modal-text-1'];
+            document.getElementById('modal-subtitle-1').textContent = lang['modal-subtitle-1'];
+            document.getElementById('modal-subtitle-2').textContent = lang['modal-subtitle-2'];
+            document.getElementById('modal-warning').innerHTML = lang['modal-warning'];
+            document.getElementById('close-modal').textContent = lang['close-modal'];
+            languageBtn.textContent = lang['language-btn'];
+            
+            // Atualizar listas
+            const modalList1 = document.getElementById('modal-list-1');
+            modalList1.innerHTML = lang['modal-list-1'].map(item => `<li>${item}</li>`).join('');
+            
+            const modalList2 = document.getElementById('modal-list-2');
+            modalList2.innerHTML = lang['modal-list-2'].map(item => `<li>${item}</li>`).join('');
+            
+            // Atualizar opções do select
+            const dataTypeOptions = dataTypeSelect.options;
+            for (let i = 0; i < dataTypeOptions.length; i++) {
+                dataTypeOptions[i].textContent = lang['data-type-options'][i];
+            }
+            
+            const periodOptions = periodSelect.options;
+            for (let i = 0; i < periodOptions.length; i++) {
+                periodOptions[i].textContent = lang['period-options'][i];
+            }
+        }
+        
+        // Mapeamento de períodos para texto amigável
+        const periodMap = {
+            "pt": {
+                "7day": "📅 Última semana",
+                "1month": "📅 Último mês",
+                "3month": "📅 Últimos 3 meses",
+                "6month": "📅 Últimos 6 meses",
+                "12month": "📅 Último ano",
+                "overall": "⏳ Todos os tempos"
+            },
+            "en": {
+                "7day": "📅 Last week",
+                "1month": "📅 Last month",
+                "3month": "📅 Last 3 months",
+                "6month": "📅 Last 6 months",
+                "12month": "📅 Last year",
+                "overall": "⏳ All time"
+            }
+        };
+        
+        // Mapeamento de tipos de dados para texto amigável
+        const dataTypeMap = {
+            "pt": {
+                "artists": "🎤 Artistas",
+                "albums": "💿 Álbuns"
+            },
+            "en": {
+                "artists": "🎤 Artists",
+                "albums": "💿 Albums"
+            }
+        };
+        
+        // Mapeamento de tipos de dados para métodos da API
+        const apiMethodMap = {
+            "artists": "user.getTopArtists",
+            "albums": "user.getTopAlbums"
+        };
+        
+        // Função para buscar os dados da API
+        async function fetchData() {
+            const username = usernameInput.value.trim();
+            const apiKey = apiKeyInput.value.trim() || DEFAULT_API_KEY;
+            const dataType = dataTypeSelect.value;
+            const period = periodSelect.value;
+            
+            if (!username) {
+                showError(translations[currentLanguage]['error-no-username']);
+                return;
+            }
+            
+            // Mostrar loading e esconder resultados/erros anteriores
+            loadingDiv.style.display = "block";
+            resultDiv.style.display = "none";
+            userInfoDiv.style.display = "none";
+            errorDiv.textContent = "";
+            
+            try {
+                // Primeiro busca as informações do usuário
+                const userInfo = await fetchUserInfo(username, apiKey);
+                
+                if (userInfo) {
+                    // Obter a maior imagem disponível para o avatar
+                    const avatarUrl = userInfo.image?.find(img => img.size === 'large')?.['#text'] || 
+                                     userInfo.image?.find(img => img.size === 'medium')?.['#text'] || 
+                                     userInfo.image?.find(img => img.size === 'small')?.['#text'] || 
+                                     "https://lastfm.freetls.fastly.net/i/u/avatar170s/2a96cbd8b46e442fc41c2b86b821562f.png";
+                    
+                    userAvatar.src = avatarUrl;
+                    userName.textContent = username;
+                    userBio.textContent = userInfo.realname || '';
+                    userInfoDiv.style.display = "flex";
+                }
+                
+                // Depois busca os dados principais
+                const method = apiMethodMap[dataType];
+                const url = `https://ws.audioscrobbler.com/2.0/?method=${method}&user=${username}&api_key=${apiKey}&period=${period}&limit=10&format=json`;
+                
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    throw new Error(`Erro na API: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.message);
+                }
+                
+                displayResults(data, dataType, period);
+            } catch (error) {
+                showError(`${translations[currentLanguage]['error-api']} ${error.message}`);
+                
+                // Se o erro for de limite de API, mostrar mensagem específica
+                if (error.message.includes("limit")) {
+                    showError(translations[currentLanguage]['error-limit']);
+                    apiKeyModal.style.display = "block";
+                }
+            } finally {
+                loadingDiv.style.display = "none";
+            }
+        }
+        
+        // Função para buscar informações do usuário
+        async function fetchUserInfo(username, apiKey) {
+            try {
+                const url = `https://ws.audioscrobbler.com/2.0/?method=user.getinfo&user=${username}&api_key=${apiKey}&format=json`;
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    return null;
+                }
+                
+                const data = await response.json();
+                return data.user || null;
+            } catch {
+                return null;
+            }
+        }
+        
+        // Função para buscar informações do artista/álbum
+        async function fetchItemInfo(item, type) {
+            try {
+                const apiKey = apiKeyInput.value.trim() || DEFAULT_API_KEY;
+                let method, param;
+                
+                if (type === 'artist') {
+                    method = 'artist.getinfo';
+                    param = `artist=${encodeURIComponent(item.name)}`;
+                } else {
+                    method = 'album.getinfo';
+                    const artist = item.artist?.name || 'Unknown';
+                    param = `album=${encodeURIComponent(item.name)}&artist=${encodeURIComponent(artist)}`;
+                }
+                
+                const url = `https://ws.audioscrobbler.com/2.0/?method=${method}&${param}&api_key=${apiKey}&format=json`;
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    return null;
+                }
+                
+                const data = await response.json();
+                return type === 'artist' ? data.artist : data.album;
+            } catch {
+                return null;
+            }
+        }
+        
+        // Função para exibir os resultados
+        async function displayResults(data, dataType, period) {
+            const items = dataType === "artists" ? data.topartists.artist : data.topalbums.album;
+            
+            if (!items || items.length === 0) {
+                showError(translations[currentLanguage]['error-no-data']);
+                return;
+            }
+            
+            // Atualizar título e período
+            resultTitle.textContent = `${dataTypeMap[currentLanguage][dataType]} ${currentLanguage === 'pt' ? 'mais ouvidos' : 'top'}`;
+            resultPeriod.textContent = periodMap[currentLanguage][period];
+            
+            // Limpar lista anterior
+            statsList.innerHTML = "";
+            
+            // Adicionar itens à lista
+            for (const [index, item] of items.entries()) {
+                const li = document.createElement("li");
+                li.className = "stats-item";
+                
+                const name = item.name || (item.artist ? item.artist.name : translations[currentLanguage]['unknown']);
+                const playcount = item.playcount || "0";
+                const url = item.url || (item.artist ? item.artist.url : `https://www.last.fm/user/${usernameInput.value.trim()}`);
+                
+                const header = document.createElement("div");
+                header.className = "stats-item-header";
+                
+                const link = document.createElement("a");
+                link.className = "stats-item-link";
+                link.href = url;
+                link.target = "_blank";
+                link.title = name;
+                
+                link.innerHTML = `
+                    <span class="rank">${index + 1}.</span>
+                    <span class="name">${name}</span>
+                    <span class="count">🎵 ${playcount} ${currentLanguage === 'pt' ? 'plays' : 'plays'}</span>
+                `;
+                
+                const toggle = document.createElement("span");
+                toggle.className = "toggle-details";
+                toggle.innerHTML = "▼";
+                toggle.onclick = async (e) => {
+                    e.stopPropagation();
+                    const details = li.querySelector(".item-details");
+                    
+                    if (details.style.display === "block") {
+                        details.style.display = "none";
+                        toggle.classList.remove("open");
+                    } else {
+                        // Se já tem conteúdo, só mostra/oculta
+                        if (details.innerHTML) {
+                            details.style.display = "block";
+                            toggle.classList.add("open");
+                        } else {
+                            // Se não, busca os detalhes
+                            details.innerHTML = '<div style="text-align: center; padding: 20px;">Carregando...</div>';
+                            details.style.display = "block";
+                            toggle.classList.add("open");
+                            
+                            const itemInfo = await fetchItemInfo(item, dataType === 'artists' ? 'artist' : 'album');
+                            
+                            if (itemInfo) {
+                                const imageUrl = itemInfo.image?.find(img => img.size === 'large')?.['#text'] || 
+                                               itemInfo.image?.find(img => img.size === 'medium')?.['#text'] || 
+                                               itemInfo.image?.find(img => img.size === 'small')?.['#text'] || 
+                                               "https://lastfm.freetls.fastly.net/i/u/avatar170s/2a96cbd8b46e442fc41c2b86b821562f.png";
+                                
+                                const bio = dataType === 'artists' ? 
+                                    (itemInfo.bio?.content || translations[currentLanguage]['no-bio']) : 
+                                    (itemInfo.wiki?.content || translations[currentLanguage]['no-info']);
+                                
+                                details.innerHTML = `
+                                    <div class="clearfix">
+                                        <img src="${imageUrl}" class="item-image" alt="${name}">
+                                        <div class="item-bio">${bio || (currentLanguage === 'pt' ? 'Nenhuma informação disponível.' : 'No information available.')}</div>
+                                    </div>
+                                `;
+                            } else {
+                                details.innerHTML = currentLanguage === 'pt' ? 
+                                    'Não foi possível carregar informações adicionais.' : 
+                                    'Could not load additional information.';
+                            }
+                        }
+                    }
+                };
+                
+                const details = document.createElement("div");
+                details.className = "item-details";
+                
+                header.appendChild(link);
+                header.appendChild(toggle);
+                li.appendChild(header);
+                li.appendChild(details);
+                statsList.appendChild(li);
+            }
+            
+            // Configurar botões de cópia
+            setupCopyButtons(items, dataType, period);
+            
+            // Mostrar resultados
+            resultDiv.style.display = "block";
+        }
+        
+        // Configurar os botões de cópia
+        function setupCopyButtons(items, dataType, period) {
+            const username = usernameInput.value.trim();
+            const dataTypeText = dataTypeMap[currentLanguage][dataType];
+            const periodText = periodMap[currentLanguage][period];
+            
+            copyPlainBtn.onclick = () => {
+                const text = generatePlainText(items, username, dataTypeText, periodText);
+                copyToClipboard(text);
+                showTooltip(copyPlainBtn, currentLanguage === 'pt' ? 'Copiado!' : 'Copied!');
+            };
+            
+            copyMarkdownBtn.onclick = () => {
+                const text = generateMarkdown(items, username, dataTypeText, periodText);
+                copyToClipboard(text);
+                showTooltip(copyMarkdownBtn, currentLanguage === 'pt' ? 'Copiado!' : 'Copied!');
+            };
+            
+            copyBBCodeBtn.onclick = () => {
+                const text = generateBBCode(items, username, dataTypeText, periodText);
+                copyToClipboard(text);
+                showTooltip(copyBBCodeBtn, currentLanguage === 'pt' ? 'Copiado!' : 'Copied!');
+            };
+        }
+        
+        // Gerar texto simples
+        function generatePlainText(items, username, dataTypeText, periodText) {
+            let text = `📊 ${dataTypeText} ${currentLanguage === 'pt' ? 'mais ouvidos por' : 'top for'} ${username} (${periodText})\n\n`;
+            
+            items.forEach((item, index) => {
+                const name = item.name || (item.artist ? item.artist.name : translations[currentLanguage]['unknown']);
+                const playcount = item.playcount || "0";
+                text += `${index + 1}. ${name} - ${playcount} ${currentLanguage === 'pt' ? 'plays' : 'plays'}\n`;
+            });
+            
+            return text;
+        }
+        
+        // Gerar Markdown
+        function generateMarkdown(items, username, dataTypeText, periodText) {
+            let text = `**📊 ${dataTypeText} ${currentLanguage === 'pt' ? 'mais ouvidos por' : 'top for'} ${username} (${periodText})**\n\n`;
+            
+            items.forEach((item, index) => {
+                const name = item.name || (item.artist ? item.artist.name : translations[currentLanguage]['unknown']);
+                const playcount = item.playcount || "0";
+                const url = item.url || (item.artist ? item.artist.url : `https://www.last.fm/user/${username}`);
+                text += `${index + 1}. [${name}](${url}) - ${playcount} ${currentLanguage === 'pt' ? 'plays' : 'plays'}\n`;
+            });
+            
+            return text;
+        }
+        
+        // Gerar BBCode
+        function generateBBCode(items, username, dataTypeText, periodText) {
+            let text = `[b]📊 ${dataTypeText} ${currentLanguage === 'pt' ? 'mais ouvidos por' : 'top for'} ${username} (${periodText})[/b]\n\n`;
+            
+            items.forEach((item, index) => {
+                const name = item.name || (item.artist ? item.artist.name : translations[currentLanguage]['unknown']);
+                const playcount = item.playcount || "0";
+                const url = item.url || (item.artist ? item.artist.url : `https://www.last.fm/user/${username}`);
+                text += `${index + 1}. [url=${url}]${name}[/url] - ${playcount} ${currentLanguage === 'pt' ? 'plays' : 'plays'}\n`;
+            });
+            
+            return text;
+        }
+        
+        // Copiar para área de transferência
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                console.log("Texto copiado com sucesso");
+            }).catch(err => {
+                console.error("Falha ao copiar texto: ", err);
+                // Fallback para navegadores mais antigos
+                const textarea = document.createElement("textarea");
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand("copy");
+                document.body.removeChild(textarea);
+            });
+        }
+        
+        // Mostrar tooltip temporário
+        function showTooltip(element, message) {
+            const tooltip = element.querySelector(".tooltiptext");
+            if (tooltip) {
+                const originalText = tooltip.textContent;
+                tooltip.textContent = message;
+                setTimeout(() => {
+                    tooltip.textContent = originalText;
+                }, 2000);
+            }
+        }
+        
+        // Função para exibir mensagens de erro
+        function showError(message) {
+            errorDiv.textContent = message;
+            resultDiv.style.display = "none";
+        }
+        
+        // Event listener para o botão de busca
+        fetchBtn.addEventListener("click", fetchData);
+        
+        // Permitir busca com Enter no campo de usuário
+        usernameInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                fetchData();
+            }
+        });
+    </script>
+</body>
+</html>
